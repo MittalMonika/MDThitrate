@@ -21,8 +21,12 @@ void printHelp() {
               << "  -i input (file, list, or dir)\n"
               << "     defaults: ''\n"
 
+              << "  -o output file \n"
+              << "     defaults: ''\n"
+ 
               << "  -s sample name, for naming files\n"
               << "     defaults: ntuple sample name\n"
+
 
               << "  -h print this help" << std::endl;
 }
@@ -32,7 +36,8 @@ int main(int argc, char **argv) {
     int nSkip = 0;
     int dbg = 0;
     std::string sample;
-    std::string input;
+    std::string dataset  = "zb";
+    std::string input, output;
     std::cout << "run_example_looper\n\n";
 
     /** Read inputs to program */
@@ -41,7 +46,9 @@ int main(int argc, char **argv) {
         else if (strcmp(argv[i], "-k") == 0) nSkip = atoi(argv[++i]);
         else if (strcmp(argv[i], "-d") == 0) dbg = atoi(argv[++i]);
         else if (strcmp(argv[i], "-i") == 0) input = argv[++i];
+	else if (strcmp(argv[i], "-o") == 0) output = argv[++i]; 
         else if (strcmp(argv[i], "-s") == 0) sample = argv[++i];
+	else if (strcmp(argv[i], "-c") == 0) dataset = argv[++i];
         else {
             printHelp();
             return 0;
@@ -63,6 +70,8 @@ int main(int argc, char **argv) {
               << "  nSkip   " << nSkip  << "\n"
               << "  dbg     " << dbg    << "\n"
               << "  input   " << input  << "\n"
+              << "  output   " << output  << "\n"
+	      << " dataset "<< dataset << "\n"
               << std::endl;
 
     bool verbose = dbg > 0;
@@ -73,7 +82,8 @@ int main(int argc, char **argv) {
     chain.ls();
 
     // Build the TSelector
-    ExampleLooper looper {&chain};
+    //ExampleLooper looper {&chain};
+    ExampleLooper looper (&chain, output, dataset.c_str());
     looper.setDebug(dbg);
     //looper.setSampleName(ChainHelper::sampleName(input, verbose));
 
